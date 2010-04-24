@@ -1,4 +1,4 @@
-#include <Neuroduino.h>
+#include <../Neuroduino.h>
 
 #define NUM_LAYERS 2
 #define ETA 0.01
