@@ -27,12 +27,12 @@ class Neuroduino
 {
 	public:
 		// methods
-		Neuroduino(int nodeArray[], int numLayers, double eta, double theta, boolean debug);
-		void	train(int inputArray[], int trainArray[]);
+		Neuroduino(double nodeArray[], int numLayers, double eta, double theta, boolean debug);
+		void	train(double inputArray[], double trainArray[]);
 		void	printNet();
-		int*	getOutput();
+		double*	getOutput();
 		void	randomizeWeights();
-		int*	simulate(int inputArray[]);
+		double*	simulate(double inputArray[]);
 		
 		// properties
 		
@@ -44,7 +44,7 @@ class Neuroduino
 		typedef struct {			   /* A LAYER OF A NET:			   */
 			int			Units;	   /* - number of units in this layer	 */
 			//VAL*		Output;	  /* - output of ith unit			*/
-			int*		Output;		// 1 or -1
+			double*		Output;		// 1 or -1
 			//VAL*		Error;	   /* - error term of ith unit		  */
 			VAL**		Weight;	  /* - connection weights to ith unit	*/
 			//VAL**		WeightSave;    /* - saved weights for stopped training  */
@@ -63,9 +63,9 @@ class Neuroduino
 	
 		// class methods
 		
-		void	setInput(int inputs[]);
-		void	adjustWeights(int trainArray[]);
-		int		signThreshold(double sum);
+		void	setInput(double inputs[]);
+		void	adjustWeights(double trainArray[]);
+		double		signThreshold(double sum);
 		double	weightedSum(int layer, int node);
 		void	simulateNetwork();
 	
@@ -79,7 +79,7 @@ class Neuroduino
 		boolean		_debug;
 		int			_numLayers;
 		NET			_net;
-		int*		_output;
+		double*		_output;
 };
 
 #endif

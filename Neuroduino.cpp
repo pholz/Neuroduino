@@ -15,13 +15,13 @@
 #include "WProgram.h"
 #include "Neuroduino.h"
 
-Neuroduino::Neuroduino(int nodeArray[], int numLayers, double eta = 0.1, double theta = 0.0, boolean debug = false) {
+Neuroduino::Neuroduino(double nodeArray[], int numLayers, double eta = 0.1, double theta = 0.0, boolean debug = false) {
 	// Constructor
 	_debug = debug;
 	//trace("Neuroduino::Neuroduino\n");
 	
 	_numLayers = numLayers;
-	_output = (int*) calloc(nodeArray[_numLayers-1], sizeof(int));
+	_output = (double*) calloc(nodeArray[_numLayers-1], sizeof(double));
 	
 	// allocate structs & initialize network
 	
@@ -34,7 +34,7 @@ Neuroduino::Neuroduino(int nodeArray[], int numLayers, double eta = 0.1, double 
 		//_output[i] = 0;
 		_net.Layer[i] = (LAYER*) malloc(sizeof(LAYER));
 		_net.Layer[i]->Units = nodeArray[i];		
-		_net.Layer[i]->Output = (int*) calloc(nodeArray[i], sizeof(int));
+		_net.Layer[i]->Output = (double*) calloc(nodeArray[i], sizeof(double));
 		
 		// 2D array of weights for each pair of nodes between layers
 		_net.Layer[i]->Weight = (VAL**) calloc(nodeArray[i]+1, sizeof(VAL*));
@@ -90,7 +90,7 @@ void Neuroduino::printNet(){
 				Serial.print(":\t");
 				for (j=0; j<_net.Layer[l-1]->Units; j++) {
 					// cycle through units of "leftmost" layer
-					Serial.print(_net.Layer[l]->Weight[i][j], 3);
+					Serial.print(_net.Layer[l]->Weight[i][j], DEC);
 					trace("\t");
 				}
 				trace("\n");
@@ -128,24 +128,24 @@ void Neuroduino::randomizeWeights() {
 	}
 }
 
-void Neuroduino::setInput(int inputs[]){
+void Neuroduino::setInput(double inputs[]){
 	int i;
 	for (i=0; i<_net.InputLayer->Units; i++) {
 		_net.InputLayer->Output[i] = inputs[i];
 	}
 }
 
-int* Neuroduino::getOutput(){
+double* Neuroduino::getOutput(){
 	
 	return _output;
 	
 }
 
-int Neuroduino::signThreshold(double sum){	
+double Neuroduino::signThreshold(double sum){	
 	if (sum >= _net.Theta) {
-		return 1;
+		return 1.0;
 	} else {
-		return -1;
+		return -1.0;
 	}
 }
 
@@ -162,10 +162,10 @@ double Neuroduino::weightedSum(int l, int node){
 	return sum;
 }
 
-void Neuroduino::adjustWeights(int trainArray[]){
+void Neuroduino::adjustWeights(double trainArray[]){
 	int l,i,j;
-	int in,out, error;
-	int activation;	// for each "rightmost" node
+	double in,out, error;
+	double activation;	// for each "rightmost" node
 	double delta;
 	
 	for (l=1; l<_numLayers; l++) {
@@ -206,7 +206,7 @@ void Neuroduino::simulateNetwork(){
 
 /********* PUBLIC *********/
 
-void Neuroduino::train(int inputArray[], int trainArray[]) {
+void Neuroduino::train(double inputArray[], double trainArray[]) {
 	trace("Neuroduino::train\n");
 	
 	setInput(inputArray);
@@ -214,7 +214,7 @@ void Neuroduino::train(int inputArray[], int trainArray[]) {
 	
 }
 
-int* Neuroduino::simulate(int inputArray[]) {
+double* Neuroduino::simulate(double inputArray[]) {
 	// introduce an input stimulus, simulate the network,
 	// and return an output array
 	trace("Neuroduino::simulate\n");
